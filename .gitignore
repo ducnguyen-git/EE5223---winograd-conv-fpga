@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+ENV/
+*.egg-info/
+.pytest_cache/
+
+# FPGA Toolflow (AMD Vivado / Intel Quartus)
+*.jou
+*.log
+*.str
+*.wdb
+*.vcd
+*.fsdb
+*.pb
+*.dcp
+.Xil/
+*.runs/
+*.sim/
+*.hw/
+*.ip_user_files/
+*.cache/
+db/
+incremental_db/
+output_files/
+*.qsf.bak
+*.qpf.bak
+
+# Testbench Generated Vectors & Waveforms
+*.vvp
+*.vcd
+tb/vectors/*.hex
+!tb/vectors/.gitkeep
