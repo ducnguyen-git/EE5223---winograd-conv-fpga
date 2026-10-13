@@ -153,7 +153,7 @@ The final evaluation compares the Winograd core directly with the Direct 3x3 Con
 
 ---
 
-## 7. Four-Week Schedule & Team Task Division
+## 7. Four-Week Schedule & Task Allocation
 
 The project is structured over 4 weeks for a **2-person engineering team**:
 - **Minh Đức (RTL & Datapath Lead)**: Focuses on datapath architecture, transform logic, multiplier arrays, integration, and baseline RTL.
@@ -163,26 +163,26 @@ The project is structured over 4 weeks for a **2-person engineering team**:
 flowchart TD
     subgraph W1["Week 1: Mathematics & Golden Model"]
         direction TB
-        W1_A["Minh Đức: Winograd Math, Bit-Growth & Interface Specs"]
-        W1_B["Thế Anh: Python Golden Models & Hex Vector Exporter"]
+        W1_A["[W1-T1] Minh Đức: Winograd Math, Bit-Growth & Interface Specs"]
+        W1_B["[W1-T2] Thế Anh: Python Golden Models & Hex Vector Exporter"]
     end
 
     subgraph W2["Week 2: Core RTL Datapath Modules"]
         direction TB
-        W2_A["Minh Đức: Input/Output Transforms & Multiplier Array"]
-        W2_B["Thế Anh: Channel Accumulator, FSM Controller & Unit TBs"]
+        W2_A["[W2-T1] Minh Đức: Input/Output Transforms & Multiplier Array"]
+        W2_B["[W2-T2] Thế Anh: Channel Accumulator, FSM Controller & Unit TBs"]
     end
 
     subgraph W3["Week 3: Integration & FPGA Synthesis"]
         direction TB
-        W3_A["Minh Đức: Top-Level Accelerator Core & Timing Closure"]
-        W3_B["Thế Anh: Full Regression Testbench & FPGA Implementation"]
+        W3_A["[W3-T1] Minh Đức: Top-Level Accelerator Core & Timing Closure"]
+        W3_B["[W3-T2] Thế Anh: Full Regression Testbench & FPGA Implementation"]
     end
 
     subgraph W4["Week 4: Baseline & Evaluation"]
         direction TB
-        W4_A["Minh Đức: Direct 3x3 Convolution Baseline Core"]
-        W4_B["Thế Anh: Comparative Benchmarking, Error Analysis & Demo"]
+        W4_A["[W4-T1] Minh Đức: Direct 3x3 Convolution Baseline Core"]
+        W4_B["[W4-T2] Thế Anh: Comparative Benchmarking, Error Analysis & Demo"]
     end
 
     W1 --> W2
@@ -190,14 +190,18 @@ flowchart TD
     W3 --> W4
 ```
 
-### Detailed Breakdown
+### GitHub Issues Tracker (Chronological: Week 1 to 4 · Minh Đức First, Thế Anh Second)
 
-| Week | Focus Area | Minh Đức (RTL Lead) | Thế Anh (Verification & Flow Lead) | Deliverables |
-| :--- | :--- | :--- | :--- | :--- |
-| **Week 1** | **Mathematics & Golden Model** | • Analyze Winograd $F(2 \times 2, 3 \times 3)$ matrix transforms<br>• Determine fixed-point INT16 bit-growth through $B^T$ and $A^T$<br>• Define module interfaces and register specifications | • Implement `direct_conv.py` & `winograd.py`<br>• Verify Winograd against direct conv on $\ge 1,000$ test cases<br>• Implement `fixed_point.py` & `generate_vectors.py` (`.hex` outputs) | Verified Python golden model, bit-growth spec, test vectors |
-| **Week 2** | **Core RTL Modules** | • Implement `input_transform.sv` ($B^T d B$)<br>• Implement `winograd_mul_array.sv` (parameterizable 4/8/16 DSPs)<br>• Implement `output_transform.sv` ($A^T M A$) | • Implement `channel_accumulator.sv`<br>• Implement `controller.sv`<br>• Create unit testbenches (`*_tb.sv`) with automated pass/fail assertion checks | Unit-tested RTL datapath modules for one Winograd tile |
-| **Week 3** | **Integration & FPGA Synthesis** | • Integrate top-level `winograd_accelerator_top.sv`<br>• Pipeline balancing and timing closure<br>• Critical path debugging and register retiming | • Build `winograd_core_tb.sv` full tile regression<br>• Setup Vivado / Quartus synthesis & P&R toolflow<br>• Record LUT, FF, DSP, BRAM, and $F_{\max}$ metrics | Working Winograd accelerator core with verified FPGA synthesis results |
-| **Week 4** | **Baseline & Evaluation** | • Implement `direct_conv_accelerator.sv` (3x3 baseline)<br>• Run baseline synthesis with identical target & constraints<br>• Assist with hardware demo preparation | • Benchmark performance: cycles/tile, GOPS, DSP efficiency<br>• Compute numerical error against FP32 golden outputs<br>• Consolidate final report, comparison figures, and slides | Final architectural comparison report, benchmarking data, and demo |
+| # | Task Tag | Milestone | Assignee | Task Title | Status |
+| :-: | :-: | :-: | :-: | :--- | :-: |
+| [#1](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/1) | `W1-T1` | Week 1 | **Minh Đức** | Winograd Mathematical Formulation, Bit-Growth Analysis & Interface Specs | Open |
+| [#2](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/2) | `W1-T2` | Week 1 | **Thế Anh** | Python Golden Reference Models, Fixed-Point Verification & Test Vector Generation | Open |
+| [#3](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/3) | `W2-T1` | Week 2 | **Minh Đức** | RTL Implementation of Winograd Transforms & Parameterizable Multiplier Engine | Open |
+| [#4](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/4) | `W2-T2` | Week 2 | **Thế Anh** | Channel Accumulator, Controller FSM & Automated Unit Testbenches | Open |
+| [#5](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/5) | `W3-T1` | Week 3 | **Minh Đức** | Top-Level Core Integration, Pipeline Balancing & Timing Closure | Open |
+| [#6](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/6) | `W3-T2` | Week 3 | **Thế Anh** | End-to-End Regression Testbench & FPGA Synthesis/Implementation Flow | Open |
+| [#7](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/7) | `W4-T1` | Week 4 | **Minh Đức** | Direct Convolution Baseline RTL & Baseline Implementation | Open |
+| [#8](https://github.com/ducnguyen-git/winograd-conv-fpga/issues/8) | `W4-T2` | Week 4 | **Thế Anh** | Architectural Benchmarking, Numerical Error Analysis & Final Report/Demo | Open |
 
 ---
 
