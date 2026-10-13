@@ -121,11 +121,13 @@ winograd_fpga/
 
 The project employs a hierarchical, automated verification flow:
 
-```
-[ Python Float Model ] ──► [ Python Fixed-Point (INT16) ] ──► [ Hex Test Vectors ]
-                                                                     │
-                                                                     ▼
-[ Final Comparison ]   ◄── [ Top-level Winograd Core ]    ◄── [ RTL Unit TBs ]
+```mermaid
+flowchart LR
+    M1["Python Floating-Point Model"] --> M2["Python Fixed-Point (INT16)"]
+    M2 --> M3["Automated Hex Vector Exporter"]
+    M3 --> M4["RTL Unit Testbenches"]
+    M4 --> M5["Top-Level Winograd Core TB"]
+    M5 --> M6["FPGA Synthesis & Baseline Comparison"]
 ```
 
 - **Golden Model Verification**: Winograd output is verified against direct convolution across $\ge 1,000$ randomized test cases in Python.
@@ -158,27 +160,34 @@ The project is structured over 4 weeks for a **2-person engineering team**:
 - **Member B (Verification & Toolflow Lead)**: Focuses on Python golden models, fixed-point quantization, test vector generation, self-checking testbenches, and FPGA synthesis scripts.
 
 ```mermaid
-gantt
-    title 4-Week Implementation Schedule
-    dateFormat  YYYY-MM-DD
-    section Week 1: Golden Model & Specs
-    Winograd math & INT16 bit-growth analysis (A) :2026-10-13, 7d
-    Python Direct & Winograd reference models (B) :2026-10-13, 4d
-    Test vector generator & hex export (B)        :2026-10-17, 3d
-    section Week 2: Core RTL Modules
-    Input & Output transform RTL (A)              :2026-10-20, 4d
-    Parameterizable multiplier array RTL (A)      :2026-10-24, 3d
-    Channel accumulator & Controller RTL (B)      :2026-10-20, 4d
-    Unit testbenches & automated checking (B)     :2026-10-24, 3d
-    section Week 3: Integration & Synthesis
-    Top-level core integration & FSM (A)          :2026-10-27, 4d
-    Timing optimization & critical path fix (A)   :2026-10-31, 3d
-    Top-level regression testbench (B)            :2026-10-27, 4d
-    FPGA synthesis, P&R & utilization report (B)  :2026-10-31, 3d
-    section Week 4: Baseline & Evaluation
-    Direct convolution baseline RTL & TB (A)      :2026-11-03, 4d
-    Comparative benchmarking & error analysis (B) :2026-11-03, 4d
-    Final documentation, demo & presentation (A+B):2026-11-07, 3d
+flowchart TD
+    subgraph W1["Week 1: Mathematics & Golden Model"]
+        direction TB
+        W1_A["Member A: Winograd Math, Bit-Growth & Interface Specs"]
+        W1_B["Member B: Python Golden Models & Hex Vector Exporter"]
+    end
+
+    subgraph W2["Week 2: Core RTL Datapath Modules"]
+        direction TB
+        W2_A["Member A: Input/Output Transforms & Multiplier Array"]
+        W2_B["Member B: Channel Accumulator, FSM Controller & Unit TBs"]
+    end
+
+    subgraph W3["Week 3: Integration & FPGA Synthesis"]
+        direction TB
+        W3_A["Member A: Top-Level Accelerator Core & Timing Closure"]
+        W3_B["Member B: Full Regression Testbench & FPGA Implementation"]
+    end
+
+    subgraph W4["Week 4: Baseline & Evaluation"]
+        direction TB
+        W4_A["Member A: Direct 3x3 Convolution Baseline Core"]
+        W4_B["Member B: Comparative Benchmarking, Error Analysis & Demo"]
+    end
+
+    W1 --> W2
+    W2 --> W3
+    W3 --> W4
 ```
 
 ### Detailed Breakdown
