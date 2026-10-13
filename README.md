@@ -153,36 +153,36 @@ The final evaluation compares the Winograd core directly with the Direct 3x3 Con
 
 ---
 
-## 7. Four-Week Schedule & 2-Person Task Division
+## 7. Four-Week Schedule & Team Task Division
 
 The project is structured over 4 weeks for a **2-person engineering team**:
-- **Member A (RTL & Datapath Lead)**: Focuses on datapath architecture, transform logic, multiplier arrays, integration, and baseline RTL.
-- **Member B (Verification & Toolflow Lead)**: Focuses on Python golden models, fixed-point quantization, test vector generation, self-checking testbenches, and FPGA synthesis scripts.
+- **Minh Đức (RTL & Datapath Lead)**: Focuses on datapath architecture, transform logic, multiplier arrays, integration, and baseline RTL.
+- **Thế Anh (Verification & Toolflow Lead)**: Focuses on Python golden models, fixed-point quantization, test vector generation, self-checking testbenches, and FPGA synthesis scripts.
 
 ```mermaid
 flowchart TD
     subgraph W1["Week 1: Mathematics & Golden Model"]
         direction TB
-        W1_A["Member A: Winograd Math, Bit-Growth & Interface Specs"]
-        W1_B["Member B: Python Golden Models & Hex Vector Exporter"]
+        W1_A["Minh Đức: Winograd Math, Bit-Growth & Interface Specs"]
+        W1_B["Thế Anh: Python Golden Models & Hex Vector Exporter"]
     end
 
     subgraph W2["Week 2: Core RTL Datapath Modules"]
         direction TB
-        W2_A["Member A: Input/Output Transforms & Multiplier Array"]
-        W2_B["Member B: Channel Accumulator, FSM Controller & Unit TBs"]
+        W2_A["Minh Đức: Input/Output Transforms & Multiplier Array"]
+        W2_B["Thế Anh: Channel Accumulator, FSM Controller & Unit TBs"]
     end
 
     subgraph W3["Week 3: Integration & FPGA Synthesis"]
         direction TB
-        W3_A["Member A: Top-Level Accelerator Core & Timing Closure"]
-        W3_B["Member B: Full Regression Testbench & FPGA Implementation"]
+        W3_A["Minh Đức: Top-Level Accelerator Core & Timing Closure"]
+        W3_B["Thế Anh: Full Regression Testbench & FPGA Implementation"]
     end
 
     subgraph W4["Week 4: Baseline & Evaluation"]
         direction TB
-        W4_A["Member A: Direct 3x3 Convolution Baseline Core"]
-        W4_B["Member B: Comparative Benchmarking, Error Analysis & Demo"]
+        W4_A["Minh Đức: Direct 3x3 Convolution Baseline Core"]
+        W4_B["Thế Anh: Comparative Benchmarking, Error Analysis & Demo"]
     end
 
     W1 --> W2
@@ -192,7 +192,7 @@ flowchart TD
 
 ### Detailed Breakdown
 
-| Week | Focus Area | Member A (RTL Lead) | Member B (Verification & Flow Lead) | Deliverables |
+| Week | Focus Area | Minh Đức (RTL Lead) | Thế Anh (Verification & Flow Lead) | Deliverables |
 | :--- | :--- | :--- | :--- | :--- |
 | **Week 1** | **Mathematics & Golden Model** | • Analyze Winograd $F(2 \times 2, 3 \times 3)$ matrix transforms<br>• Determine fixed-point INT16 bit-growth through $B^T$ and $A^T$<br>• Define module interfaces and register specifications | • Implement `direct_conv.py` & `winograd.py`<br>• Verify Winograd against direct conv on $\ge 1,000$ test cases<br>• Implement `fixed_point.py` & `generate_vectors.py` (`.hex` outputs) | Verified Python golden model, bit-growth spec, test vectors |
 | **Week 2** | **Core RTL Modules** | • Implement `input_transform.sv` ($B^T d B$)<br>• Implement `winograd_mul_array.sv` (parameterizable 4/8/16 DSPs)<br>• Implement `output_transform.sv` ($A^T M A$) | • Implement `channel_accumulator.sv`<br>• Implement `controller.sv`<br>• Create unit testbenches (`*_tb.sv`) with automated pass/fail assertion checks | Unit-tested RTL datapath modules for one Winograd tile |
