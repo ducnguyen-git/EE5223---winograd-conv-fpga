@@ -1,0 +1,3 @@
+\contentsline {table}{\numberline {1}{\ignorespaces Comparison of FPGA Reconfigurable Flow and ASIC Manufacturing Flow.}}{6}{table.caption.2}%
+\contentsline {table}{\numberline {2}{\ignorespaces Architectural Comparison: Direct 3x3 Baseline vs. Winograd $F(2 \times 2, 3 \times 3)$.}}{8}{table.caption.4}%
+\contentsline {table}{\numberline {3}{\ignorespaces Detailed FPGA Device Resource Utilization Breakdown (Xilinx Artix-7 XC7A100T).}}{15}{table.caption.6}%
