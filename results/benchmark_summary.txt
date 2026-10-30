@@ -1,0 +1,5 @@
+EE5223 Winograd Accelerator Evaluation Summary
+Tested Tiles: 2000
+Average SNR: 50.61 dB
+Average MSE: 2.004084e-05
+Multiplication Reduction: 2.25x (16 DSPs vs 36 DSPs)
