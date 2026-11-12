@@ -1,0 +1,6 @@
+\contentsline {figure}{\numberline {1}{\ignorespaces Top-Level Block Diagram of the Pipelined Winograd Accelerator Core (\texttt {winograd\_top.sv}).}}{6}{figure.caption.3}%
+\contentsline {figure}{\numberline {2}{\ignorespaces Microarchitecture of the Multiplierless 2D Input Transform Unit (\texttt {input\_transform\_2d.sv}).}}{7}{figure.caption.4}%
+\contentsline {figure}{\numberline {3}{\ignorespaces Microarchitecture of the 2D Output Transform Unit with Requantization and Saturation (\texttt {output\_transform\_2d.sv}).}}{8}{figure.caption.5}%
+\contentsline {figure}{\numberline {4}{\ignorespaces Finite State Machine (FSM) State Transition Diagram (\texttt {winograd\_controller.sv}).}}{9}{figure.caption.6}%
+\contentsline {figure}{\numberline {5}{\ignorespaces Hierarchical Simulation and Verification Methodology Flow.}}{9}{figure.caption.7}%
+\contentsline {figure}{\numberline {6}{\ignorespaces Pipeline Timing Diagram of the Winograd Accelerator Core.}}{11}{figure.caption.8}%

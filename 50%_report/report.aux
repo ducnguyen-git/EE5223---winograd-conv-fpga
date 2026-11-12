@@ -1,0 +1,70 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\@writefile{toc}{\contentsline {section}{Executive Summary}{i}{Doc-Start}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {1}Project Requirements and Specifications}{1}{section.1}\protected@file@percent }
+\newlabel{sec:requirements}{{1}{1}{Project Requirements and Specifications}{section.1}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Background and Problem Statement}{1}{subsection.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Project Objectives and Technical Specifications}{1}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.3}Milestone Scope and Boundaries}{1}{subsection.1.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Hardware Accelerator Design Specifications.}}{2}{table.caption.1}\protected@file@percent }
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{tab:specifications}{{1}{2}{Hardware Accelerator Design Specifications}{table.caption.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {2}Design Description}{2}{section.2}\protected@file@percent }
+\newlabel{sec:design_description}{{2}{2}{Design Description}{section.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Operating Principle and Mathematical Formulation}{2}{subsection.2.1}\protected@file@percent }
+\newlabel{subsec:theory}{{2.1}{2}{Operating Principle and Mathematical Formulation}{subsection.2.1}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.1}Mathematical Foundation of Winograd $F(2 \times 2, 3 \times 3)$}{2}{subsubsection.2.1.1}\protected@file@percent }
+\newlabel{eq:winograd_2d}{{3}{3}{Mathematical Foundation of Winograd $F(2 \times 2, 3 \times 3)$}{equation.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.2}Standard Transformation Matrices}{3}{subsubsection.2.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.3}Arithmetic Complexity Reduction Analysis}{3}{subsubsection.2.1.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.4}Multiplierless Transformation Property}{4}{subsubsection.2.1.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.5}Bit-Growth Analysis and Precision Management}{4}{subsubsection.2.1.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.1.6}Transform-Domain Linearity for Channel Accumulation}{4}{subsubsection.2.1.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Bit-Growth and Arithmetic Precision Across Datapath Stages.}}{5}{table.caption.2}\protected@file@percent }
+\newlabel{tab:bit_growth}{{2}{5}{Bit-Growth and Arithmetic Precision Across Datapath Stages}{table.caption.2}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}RTL Architecture and Microarchitecture}{6}{subsection.2.2}\protected@file@percent }
+\newlabel{subsec:rtl_architecture}{{2.2}{6}{RTL Architecture and Microarchitecture}{subsection.2.2}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.1}Top-Level Accelerator Architecture}{6}{subsubsection.2.2.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Top-Level Block Diagram of the Pipelined Winograd Accelerator Core (\texttt  {winograd\_top.sv}).}}{6}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:top_block_diagram}{{1}{6}{Top-Level Block Diagram of the Pipelined Winograd Accelerator Core (\texttt {winograd\_top.sv})}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.2}2D Input Transform Unit (\texttt  {input\_transform\_2d.sv})}{6}{subsubsection.2.2.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Microarchitecture of the Multiplierless 2D Input Transform Unit (\texttt  {input\_transform\_2d.sv}).}}{7}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:in_trans_diagram}{{2}{7}{Microarchitecture of the Multiplierless 2D Input Transform Unit (\texttt {input\_transform\_2d.sv})}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.3}Parameterizable Multiplier Array (\texttt  {multiplier\_array.sv})}{7}{subsubsection.2.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.4}Channel Accumulator Unit (\texttt  {channel\_accumulator.sv})}{7}{subsubsection.2.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.5}2D Output Transform Unit (\texttt  {output\_transform\_2d.sv})}{8}{subsubsection.2.2.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Microarchitecture of the 2D Output Transform Unit with Requantization and Saturation (\texttt  {output\_transform\_2d.sv}).}}{8}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:out_trans_diagram}{{3}{8}{Microarchitecture of the 2D Output Transform Unit with Requantization and Saturation (\texttt {output\_transform\_2d.sv})}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.2.6}FSM Controller (\texttt  {winograd\_controller.sv})}{8}{subsubsection.2.2.6}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Finite State Machine (FSM) State Transition Diagram (\texttt  {winograd\_controller.sv}).}}{9}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:fsm_diagram}{{4}{9}{Finite State Machine (FSM) State Transition Diagram (\texttt {winograd\_controller.sv})}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Design Simulation and Verification}{9}{section.3}\protected@file@percent }
+\newlabel{sec:simulation}{{3}{9}{Design Simulation and Verification}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Verification Methodology and Flow}{9}{subsection.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Hierarchical Simulation and Verification Methodology Flow.}}{9}{figure.caption.7}\protected@file@percent }
+\newlabel{fig:verif_flow}{{5}{9}{Hierarchical Simulation and Verification Methodology Flow}{figure.caption.7}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Unit-Level Simulation Verification}{10}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Top-Level Accelerator Core Simulation}{10}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.1}Pipeline Timing and Waveform Analysis}{10}{subsubsection.3.3.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Pipeline Timing Diagram of the Winograd Accelerator Core.}}{11}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:pipeline_timing}{{6}{11}{Pipeline Timing Diagram of the Winograd Accelerator Core}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.3.2}Automated Regression Verification on ModelSim}{12}{subsubsection.3.3.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Summary of ModelSim Regression Verification Results.}}{12}{table.caption.9}\protected@file@percent }
+\newlabel{tab:sim_summary}{{3}{12}{Summary of ModelSim Regression Verification Results}{table.caption.9}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {1}{\ignorespaces ModelSim Automated Regression Simulation Console Transcript.}}{12}{lstlisting.1}\protected@file@percent }
+\bibcite{lavin2016}{1}
+\bibcite{winograd1980}{2}
+\bibcite{he2016resnet}{3}
+\bibcite{lu2017fpga}{4}
+\bibcite{ieee1800}{5}
+\@writefile{toc}{\contentsline {section}{References}{14}{lstnumber.1.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{Appendices}{15}{section*.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {A}Synthesizable SystemVerilog Module Snippets}{15}{section.1.A}\protected@file@percent }
+\newlabel{app:rtl_code}{{A}{15}{Synthesizable SystemVerilog Module Snippets}{section.1.A}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {2}{\ignorespaces Multiplierless 1D Input Transformation Stage in SystemVerilog (\texttt  {input\_transform\_1d.sv}).}}{15}{lstlisting.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {B}Python Golden Model Reference Implementation}{15}{section.1.B}\protected@file@percent }
+\newlabel{app:python_code}{{B}{15}{Python Golden Model Reference Implementation}{section.1.B}{}}
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {3}{\ignorespaces Python Winograd F(2x2, 3x3) Algorithmic Reference Implementation.}}{15}{lstlisting.3}\protected@file@percent }
+\gdef \@abspage@last{21}

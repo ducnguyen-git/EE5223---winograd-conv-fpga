@@ -89,35 +89,35 @@
 \begin{titlepage}
     \centering
     \vspace*{0.5cm}
-    
+
     {\Large \textbf{VIETNAM NATIONAL UNIVERSITY - HO CHI MINH CITY}}\\[0.2cm]
     {\large \textbf{FACULTY OF ELECTRICAL AND ELECTRONICS ENGINEERING}}\\[1.5cm]
-    
+
     \rule{\linewidth}{1.5pt}\\[0.5cm]
     {\huge \bfseries Design and FPGA Implementation of a Winograd Convolution Accelerator for CNN Inference}\\[0.4cm]
     \rule{\linewidth}{1.5pt}\\[1.5cm]
-    
+
     \textbf{\Large Course Project Report}\\[0.3cm]
     {\large \textbf{Course Name:} Hardware Architectures for Machine Learning}\\[0.15cm]
     {\large \textbf{Course Code:} EE5223}\\[0.15cm]
     {\large \textbf{Group Number:} Group 07}\\[1.8cm]
-    
+
     \begin{minipage}[t]{0.48\textwidth}
         \textbf{\large Group Members:}\\[0.3cm]
         \begin{tabular}{ll}
             \textbf{Nguyen Minh Duc} & \textit{Student ID:} 2570662 \\
-            \textbf{Le The Anh} & \textit{Student ID:} 2570660 \\
+            \textbf{Le The Anh}      & \textit{Student ID:} 2570660 \\
         \end{tabular}
     \end{minipage}
-    \hfill
+    \vfill
     \begin{minipage}[t]{0.45\textwidth}
-        \begin{flushright}
-            \textbf{\large Instructor:}\\[0.3cm]
-            \large Truong Quang Vinh, Assoc. Prof. Ph.D\\[0.15cm]
+        \begin{tabular}{ll}
+            \textbf{\large Instructor:}                 \\[0.3cm]
+            \large Truong Quang Vinh, Assoc. Prof. Ph.D \\[0.15cm]
             \textit{Faculty of Electrical and Electronics Engineering}
-        \end{flushright}
+        \end{tabular}
     \end{minipage}
-    
+
     \vfill
     {\large \textbf{Date of Submission:} November 2026}\\[0.3cm]
     {\large Ho Chi Minh City, Vietnam}
@@ -167,7 +167,7 @@ Deep Convolutional Neural Networks (CNNs) have established themselves as the fou
 As AI models are increasingly migrated from cloud datacenters to power-constrained edge platforms (e.g., smart cameras, edge gateways, and automotive Electronic Control Units), conventional general-purpose Central Processing Units (CPUs) and energy-hungry Graphics Processing Units (GPUs) struggle to meet tight real-time latency and thermal design power (TDP) constraints. Consequently, domain-specific hardware accelerators implemented on Field Programmable Gate Arrays (FPGAs) and Application-Specific Integrated Circuits (ASICs) have emerged as the primary solution for achieving deterministic throughput with superior energy efficiency.
 
 \subsection{Problem Statement}
-Direct spatial convolution is fundamentally compute-bound and memory-bandwidth constrained. The standard sliding-window approach computes output activations via exhaustive Multiply-Accumulate (MAC) sequences. For small $3 \times 3$ kernels—which dominate modern network architectures such as VGG, ResNet, and MobileNet—direct convolution exhibits substantial arithmetic redundancy. 
+Direct spatial convolution is fundamentally compute-bound and memory-bandwidth constrained. The standard sliding-window approach computes output activations via exhaustive Multiply-Accumulate (MAC) sequences. For small $3 \times 3$ kernels—which dominate modern network architectures such as VGG, ResNet, and MobileNet—direct convolution exhibits substantial arithmetic redundancy.
 
 While fast algorithms such as Fast Fourier Transform (FFT) can reduce multiplication complexity for large filter kernels, FFT is notoriously inefficient for small kernels (e.g., $3 \times 3$) due to heavy complex-arithmetic transformation overheads and large memory footprint. Hence, the central engineering challenge is to minimize multiplication operations for small-kernel CNN inference without incurring prohibitive hardware complexity or unacceptable quantization error.
 
@@ -228,19 +228,19 @@ where:
 The fixed transformation matrices $B^T$, $G$, and $A^T$ for $F(2 \times 2, 3 \times 3)$ are defined as:
 \begin{equation}
     B^T = \begin{bmatrix}
-        1 & 0 & -1 & 0 \\
-        0 & 1 & 1 & 0 \\
-        0 & -1 & 1 & 0 \\
-        0 & 1 & 0 & -1
+        1 & 0  & -1 & 0  \\
+        0 & 1  & 1  & 0  \\
+        0 & -1 & 1  & 0  \\
+        0 & 1  & 0  & -1
     \end{bmatrix}, \quad
     G = \begin{bmatrix}
-        1 & 0 & 0 \\
-        \frac{1}{2} & \frac{1}{2} & \frac{1}{2} \\
+        1           & 0            & 0           \\
+        \frac{1}{2} & \frac{1}{2}  & \frac{1}{2} \\
         \frac{1}{2} & -\frac{1}{2} & \frac{1}{2} \\
-        0 & 0 & 1
+        0           & 0            & 1
     \end{bmatrix}, \quad
     A^T = \begin{bmatrix}
-        1 & 1 & 1 & 0 \\
+        1 & 1 & 1  & 0  \\
         0 & 1 & -1 & -1
     \end{bmatrix}
 \end{equation}
@@ -271,16 +271,16 @@ The project employs an industry-standard digital ASIC/FPGA front-to-back design 
 \begin{figure}[htbp]
     \centering
     \fbox{\parbox{0.9\textwidth}{
-        \centering
-        \vspace{0.2cm}
-        \textbf{Algorithm Exploration (Python Float32)} $\longrightarrow$ 
-        \textbf{Fixed-Point Modeling (INT16)} $\longrightarrow$ 
-        \textbf{RTL Architecture (SystemVerilog)} $\longrightarrow$ \\[0.2cm]
-        \textbf{Automated Testbench Simulation (Icarus/ModelSim)} $\longrightarrow$ 
-        \textbf{Logic Synthesis \& P\&R (Vivado)} $\longrightarrow$ 
-        \textbf{Timing Closure \& Metrics Evaluation}
-        \vspace{0.2cm}
-    }}
+            \centering
+            \vspace{0.2cm}
+            \textbf{Algorithm Exploration (Python Float32)} $\longrightarrow$
+            \textbf{Fixed-Point Modeling (INT16)} $\longrightarrow$
+            \textbf{RTL Architecture (SystemVerilog)} $\longrightarrow$ \\[0.2cm]
+            \textbf{Automated Testbench Simulation (Icarus/ModelSim)} $\longrightarrow$
+            \textbf{Logic Synthesis \& P\&R (Vivado)} $\longrightarrow$
+            \textbf{Timing Closure \& Metrics Evaluation}
+            \vspace{0.2cm}
+        }}
     \caption{Hierarchical Design and Verification Methodology Flow.}
     \label{fig:design_flow}
 \end{figure}
@@ -303,14 +303,14 @@ To contextualize this accelerator within digital IC design, Table~\ref{tab:fpga_
     \small
     \begin{tabularx}{\textwidth}{lXX}
         \toprule
-        \textbf{Phase / Aspect} & \textbf{FPGA Implementation (This Work)} & \textbf{ASIC Fabrication Flow} \\
+        \textbf{Phase / Aspect}    & \textbf{FPGA Implementation (This Work)}           & \textbf{ASIC Fabrication Flow}                                                                        \\
         \midrule
-        \textbf{Logic Realization} & SRAM-based Look-Up Tables (LUT6) and D-FFs & Standard-cell logic gates (NAND, NOR, Inverters) \\
-        \textbf{Arithmetic Blocks} & Dedicated hardwired DSP48E1/E2 slices & Custom Booth multipliers or Wallace tree macros \\
-        \textbf{Memory} & Embedded Block RAMs (BRAM 18K/36K) & Custom SRAM compilers or register files \\
-        \textbf{Fabrication} & Pre-fabricated silicon; reprogrammed via bitstream & Silicon wafer preparation, Photolithography, Etching, Ion Implantation, CMP, Metallization, Packaging \\
-        \textbf{Turnaround Time} & Minutes to hours & Months (NRE costs > \$1M-\$10M) \\
-        \textbf{Testing} & Real-time on-chip debugging (ILA / VIO) & Wafer probe test, Automatic Test Equipment (ATE) \\
+        \textbf{Logic Realization} & SRAM-based Look-Up Tables (LUT6) and D-FFs         & Standard-cell logic gates (NAND, NOR, Inverters)                                                      \\
+        \textbf{Arithmetic Blocks} & Dedicated hardwired DSP48E1/E2 slices              & Custom Booth multipliers or Wallace tree macros                                                       \\
+        \textbf{Memory}            & Embedded Block RAMs (BRAM 18K/36K)                 & Custom SRAM compilers or register files                                                               \\
+        \textbf{Fabrication}       & Pre-fabricated silicon; reprogrammed via bitstream & Silicon wafer preparation, Photolithography, Etching, Ion Implantation, CMP, Metallization, Packaging \\
+        \textbf{Turnaround Time}   & Minutes to hours                                   & Months (NRE costs > \$1M-\$10M)                                                                       \\
+        \textbf{Testing}           & Real-time on-chip debugging (ILA / VIO)            & Wafer probe test, Automatic Test Equipment (ATE)                                                      \\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -332,17 +332,17 @@ The Winograd accelerator core implements a 6-stage structured datapath as illust
 \begin{figure}[htbp]
     \centering
     \fbox{\parbox{0.92\textwidth}{
-        \centering
-        \vspace{0.3cm}
-        \texttt{[4x4 Input Buffer]} $\xrightarrow{16 \times \text{INT16}}$ 
-        \texttt{[Input Transform: $B^T d B$]} $\xrightarrow{16 \times \text{INT18}}$ 
-        \texttt{[Multiplier Array: $U \odot V$]} \\[0.3cm]
-        $\xrightarrow{16 \times \text{INT34}}$ 
-        \texttt{[Channel Accumulator]} $\xrightarrow{16 \times \text{INT36}}$ 
-        \texttt{[Output Transform: $A^T M A$]} $\xrightarrow{4 \times \text{INT16}}$ 
-        \texttt{[Output Tile]}
-        \vspace{0.3cm}
-    }}
+            \centering
+            \vspace{0.3cm}
+            \texttt{[4x4 Input Buffer]} $\xrightarrow{16 \times \text{INT16}}$
+            \texttt{[Input Transform: $B^T d B$]} $\xrightarrow{16 \times \text{INT18}}$
+            \texttt{[Multiplier Array: $U \odot V$]} \\[0.3cm]
+            $\xrightarrow{16 \times \text{INT34}}$
+            \texttt{[Channel Accumulator]} $\xrightarrow{16 \times \text{INT36}}$
+            \texttt{[Output Transform: $A^T M A$]} $\xrightarrow{4 \times \text{INT16}}$
+            \texttt{[Output Tile]}
+            \vspace{0.3cm}
+        }}
     \caption{Block Diagram of the Pipelined Winograd Accelerator Core.}
     \label{fig:datapath_block}
 \end{figure}
@@ -357,10 +357,10 @@ The 2D transform $B^T d B$ is separated into two consecutive 1D transforms to mi
 \end{equation}
 Each 1D transform operation on column vector $\mathbf{x} = [x_0, x_1, x_2, x_3]^T$ computes:
 \begin{align}
-    v_0 &= (x_0 - x_2) \\
-    v_1 &= (x_1 + x_2) \\
-    v_2 &= (x_2 - x_1) \\
-    v_3 &= (x_1 - x_3)
+    v_0 & = (x_0 - x_2) \\
+    v_1 & = (x_1 + x_2) \\
+    v_2 & = (x_2 - x_1) \\
+    v_3 & = (x_1 - x_3)
 \end{align}
 Because each addition can increase dynamic range by 1 bit, the 2D transform requires $+2$ bits of headroom. For an INT16 input ($[-32768, 32767]$), intermediate transformed values $V$ expand to signed \textbf{18-bit} representation.
 
@@ -399,17 +399,17 @@ The Winograd accelerator is evaluated against a conventional direct $3 \times 3$
     \small
     \begin{tabularx}{\textwidth}{lXXX}
         \toprule
-        \textbf{Performance / Resource Metric} & \textbf{Direct 3x3 Baseline} & \textbf{Winograd $F(2 \times 2, 3 \times 3)$} & \textbf{Architectural Impact} \\
+        \textbf{Performance / Resource Metric} & \textbf{Direct 3x3 Baseline} & \textbf{Winograd $F(2 \times 2, 3 \times 3)$} & \textbf{Architectural Impact}                \\
         \midrule
-        \textbf{Multiplications per 2x2 Tile} & 36 & 16 & $2.25\times$ arithmetic reduction \\
-        \textbf{DSP Slices ($N=16$ mode)} & 36 & 16 & $55.6\%$ reduction in multiplier units \\
-        \textbf{LUT Utilization} & Moderate (low transform) & Higher ($+25-40\%$) & Overhead from $B^T d B$ and $A^T M A$ adders \\
-        \textbf{Flip-Flop (FF) Registers} & Baseline & Slightly higher & Transform pipeline balancing registers \\
-        \textbf{Block RAM (BRAM 18K)} & 2 & 2 & Comparable tile buffering requirements \\
-        \textbf{Max Frequency ($F_{\max}$)} & $\approx 220\text{ MHz}$ & $\approx 200\text{ MHz}$ & Slight reduction due to transform add-trees \\
-        \textbf{Latency (Cycles per Tile)} & 36 (or 9 cycles @ 4 MACs) & 6-8 pipelined cycles & Substantial latency improvement \\
-        \textbf{Throughput (Tiles/sec)} & Reference ($1.0\times$) & $\approx 1.8\times - 2.1\times$ & Significant net speedup achieved \\
-        \textbf{Numerical Error (vs. FP32)} & Baseline INT16 & SNR $> 42\text{ dB}$, negligible MSE & Excellent fixed-point stability \\
+        \textbf{Multiplications per 2x2 Tile}  & 36                           & 16                                            & $2.25\times$ arithmetic reduction            \\
+        \textbf{DSP Slices ($N=16$ mode)}      & 36                           & 16                                            & $55.6\%$ reduction in multiplier units       \\
+        \textbf{LUT Utilization}               & Moderate (low transform)     & Higher ($+25-40\%$)                           & Overhead from $B^T d B$ and $A^T M A$ adders \\
+        \textbf{Flip-Flop (FF) Registers}      & Baseline                     & Slightly higher                               & Transform pipeline balancing registers       \\
+        \textbf{Block RAM (BRAM 18K)}          & 2                            & 2                                             & Comparable tile buffering requirements       \\
+        \textbf{Max Frequency ($F_{\max}$)}    & $\approx 220\text{ MHz}$     & $\approx 200\text{ MHz}$                      & Slight reduction due to transform add-trees  \\
+        \textbf{Latency (Cycles per Tile)}     & 36 (or 9 cycles @ 4 MACs)    & 6-8 pipelined cycles                          & Substantial latency improvement              \\
+        \textbf{Throughput (Tiles/sec)}        & Reference ($1.0\times$)      & $\approx 1.8\times - 2.1\times$               & Significant net speedup achieved             \\
+        \textbf{Numerical Error (vs. FP32)}    & Baseline INT16               & SNR $> 42\text{ dB}$, negligible MSE          & Excellent fixed-point stability              \\
         \bottomrule
     \end{tabularx}
 \end{table}
@@ -474,28 +474,28 @@ While the single-tile core is functionally complete and verified, several promis
 % ------------------------------------------------------------------------------
 \newpage
 \begin{thebibliography}{99}
-\addcontentsline{toc}{section}{References}
+    \addcontentsline{toc}{section}{References}
 
-\bibitem{lavin2016}
-A.~Lavin and S.~Gray, `Fast algorithms for convolutional neural networks,'' in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~4013--4021, 2016.
+    \bibitem{lavin2016}
+    A.~Lavin and S.~Gray, `Fast algorithms for convolutional neural networks,'' in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~4013--4021, 2016.
 
-\bibitem{winograd1980}
-S.~Winograd, \textit{Arithmetic Complexity of Computations}, vol.~33 of CBMS-NSF Regional Conference Series in Applied Mathematics, SIAM, Philadelphia, 1980.
+    \bibitem{winograd1980}
+    S.~Winograd, \textit{Arithmetic Complexity of Computations}, vol.~33 of CBMS-NSF Regional Conference Series in Applied Mathematics, SIAM, Philadelphia, 1980.
 
-\bibitem{he2016resnet}
-K.~He, X.~Zhang, S.~Ren, and J.~Sun, `Deep residual learning for image recognition,'' in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~770--778, 2016.
+    \bibitem{he2016resnet}
+    K.~He, X.~Zhang, S.~Ren, and J.~Sun, `Deep residual learning for image recognition,'' in \textit{Proceedings of the IEEE Conference on Computer Vision and Pattern Recognition (CVPR)}, pp.~770--778, 2016.
 
-\bibitem{lu2017fpga}
-L.~Lu, J.~Xie, R.~Huang, C.~Liu, and W.~Luk, `An efficient hardware accelerator for sparse convolutional neural networks on FPGAs,'' in \textit{IEEE 25th Annual International Symposium on Field-Programmable Custom Computing Machines (FCCM)}, pp.~17--24, 2017.
+    \bibitem{lu2017fpga}
+    L.~Lu, J.~Xie, R.~Huang, C.~Liu, and W.~Luk, `An efficient hardware accelerator for sparse convolutional neural networks on FPGAs,'' in \textit{IEEE 25th Annual International Symposium on Field-Programmable Custom Computing Machines (FCCM)}, pp.~17--24, 2017.
 
-\bibitem{xilinx_ug901}
-AMD Xilinx, \textit{Vivado Design Suite User Guide: Synthesis (UG901)}, v2022.2, 2022.
+    \bibitem{xilinx_ug901}
+    AMD Xilinx, \textit{Vivado Design Suite User Guide: Synthesis (UG901)}, v2022.2, 2022.
 
-\bibitem{ieee1800}
-IEEE, \textit{1800-2017 - IEEE Standard for SystemVerilog--Unified Hardware Design, Specification, and Verification Language}, IEEE Standards Association, 2017.
+    \bibitem{ieee1800}
+    IEEE, \textit{1800-2017 - IEEE Standard for SystemVerilog--Unified Hardware Design, Specification, and Verification Language}, IEEE Standards Association, 2017.
 
-\bibitem{jouppi2017tpu}
-N.~P.~Jouppi \textit{et al.}, `In-datacenter performance analysis of a tensor processing unit,'' in \textit{ACM/IEEE 44th Annual International Symposium on Computer Architecture (ISCA)}, pp.~1--12, 2017.
+    \bibitem{jouppi2017tpu}
+    N.~P.~Jouppi \textit{et al.}, `In-datacenter performance analysis of a tensor processing unit,'' in \textit{ACM/IEEE 44th Annual International Symposium on Computer Architecture (ISCA)}, pp.~1--12, 2017.
 
 \end{thebibliography}
 
@@ -505,12 +505,12 @@ N.~P.~Jouppi \textit{et al.}, `In-datacenter performance analysis of a tensor pr
 \newpage
 \begin{appendices}
 
-\section{SystemVerilog Hardware Datapath Modules}
-\label{app:rtl_code}
+    \section{SystemVerilog Hardware Datapath Modules}
+    \label{app:rtl_code}
 
-The following SystemVerilog snippet illustrates the pipelined input transformation unit implementing $V = B^T d B$ using shift-add trees without hardware multipliers.
+    The following SystemVerilog snippet illustrates the pipelined input transformation unit implementing $V = B^T d B$ using shift-add trees without hardware multipliers.
 
-\begin{lstlisting}[language=Verilog, caption={Separable 1D Input Transformation Stage in SystemVerilog.}]
+    \begin{lstlisting}[language=Verilog, caption={Separable 1D Input Transformation Stage in SystemVerilog.}]
 // =============================================================================
 // Module: input_transform_1d
 // Description: Multiplierless 1D Winograd input transform: V = B^T * d
@@ -542,10 +542,10 @@ module input_transform_1d #(
 endmodule
 \end{lstlisting}
 
-\section{Python Golden Model and Test Vector Exporter}
-\label{app:python_code}
+    \section{Python Golden Model and Test Vector Exporter}
+    \label{app:python_code}
 
-\begin{lstlisting}[language=Python, caption={Python Winograd F(2x2, 3x3) Reference Implementation.}]
+    \begin{lstlisting}[language=Python, caption={Python Winograd F(2x2, 3x3) Reference Implementation.}]
 import numpy as np
 
 # Fixed Winograd Transformation Matrices
@@ -584,30 +584,30 @@ def winograd_f2x2_3x3(d, g):
     return Y
 \end{lstlisting}
 
-\section{Detailed Synthesis and Resource Utilization Logs}
-\label{app:synthesis_logs}
+    \section{Detailed Synthesis and Resource Utilization Logs}
+    \label{app:synthesis_logs}
 
-\begin{table}[htbp]
-    \centering
-    \caption{Detailed FPGA Device Resource Utilization Breakdown (Xilinx Artix-7 XC7A100T).}
-    \label{tab:detailed_util}
-    \small
-    \begin{tabular}{lrrrr}
-        \toprule
-        \textbf{Module Component} & \textbf{LUTs} & \textbf{Flip-Flops} & \textbf{DSP48E1} & \textbf{BRAM (18K)} \\
-        \midrule
-        Input Buffer Array & 124 & 256 & 0 & 0 \\
-        Input Transform Unit ($B^T d B$) & 480 & 288 & 0 & 0 \\
-        Multiplier Array ($N=16$ DSP mode) & 64 & 256 & 16 & 0 \\
-        Channel Partial-Sum Accumulator & 288 & 576 & 0 & 0 \\
-        Output Transform Unit ($A^T M A$) & 320 & 128 & 0 & 0 \\
-        FSM Controller \& Handshake Logic & 85 & 64 & 0 & 0 \\
-        \midrule
-        \textbf{Total Top-Level Winograd Core} & \textbf{1,361} & \textbf{1,568} & \textbf{16} & \textbf{0} \\
-        \textbf{Direct 3x3 Convolution Baseline} & \textbf{980} & \textbf{1,120} & \textbf{36} & \textbf{0} \\
-        \bottomrule
-    \end{tabular}
-\end{table}
+    \begin{table}[htbp]
+        \centering
+        \caption{Detailed FPGA Device Resource Utilization Breakdown (Xilinx Artix-7 XC7A100T).}
+        \label{tab:detailed_util}
+        \small
+        \begin{tabular}{lrrrr}
+            \toprule
+            \textbf{Module Component}                & \textbf{LUTs}  & \textbf{Flip-Flops} & \textbf{DSP48E1} & \textbf{BRAM (18K)} \\
+            \midrule
+            Input Buffer Array                       & 124            & 256                 & 0                & 0                   \\
+            Input Transform Unit ($B^T d B$)         & 480            & 288                 & 0                & 0                   \\
+            Multiplier Array ($N=16$ DSP mode)       & 64             & 256                 & 16               & 0                   \\
+            Channel Partial-Sum Accumulator          & 288            & 576                 & 0                & 0                   \\
+            Output Transform Unit ($A^T M A$)        & 320            & 128                 & 0                & 0                   \\
+            FSM Controller \& Handshake Logic        & 85             & 64                  & 0                & 0                   \\
+            \midrule
+            \textbf{Total Top-Level Winograd Core}   & \textbf{1,361} & \textbf{1,568}      & \textbf{16}      & \textbf{0}          \\
+            \textbf{Direct 3x3 Convolution Baseline} & \textbf{980}   & \textbf{1,120}      & \textbf{36}      & \textbf{0}          \\
+            \bottomrule
+        \end{tabular}
+    \end{table}
 
 \end{appendices}
 

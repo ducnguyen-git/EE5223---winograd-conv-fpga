@@ -1,0 +1,33 @@
+# vsim -c winograd_core_tb -do "run -all; quit" 
+# Start time: 10:16:53 on Nov 12,2026
+# Loading sv_std.std
+# Loading work.winograd_core_tb
+# Loading work.winograd_top
+# Loading work.input_transform_2d
+# Loading work.multiplier_array
+# Loading work.channel_accumulator
+# Loading work.output_transform_2d
+# Loading work.input_transform_1d
+# Loading work.output_transform_1d
+# run -all
+# [TB] Loading hex test vectors...
+# [TB] Test vectors loaded successfully.
+# [TB INFO] Verified 10 / 50 tiles...
+# [TB INFO] Verified 20 / 50 tiles...
+# [TB INFO] Verified 30 / 50 tiles...
+# [TB INFO] Verified 40 / 50 tiles...
+# [TB INFO] Verified 50 / 50 tiles...
+# 
+# =======================================================
+#           REGRESSION SIMULATION SUMMARY                
+# =======================================================
+#  Total Tiles Tested   : 50
+#  Total Output Pixels  : 200
+#  Total Mismatches     : 0
+#  STATUS               : [PASSED] ZERO BIT MISMATCHES!  
+# =======================================================
+# 
+# ** Note: $finish    : tb/winograd_core_tb.sv(101)
+#    Time: 655 ns  Iteration: 0  Instance: /winograd_core_tb
+# End time: 10:16:54 on Nov 12,2026, Elapsed time: 0:00:01
+# Errors: 0, Warnings: 0

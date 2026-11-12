@@ -1,0 +1,38 @@
+\documentclass[border=10pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta}
+\usepackage{tikz-timing}
+
+\begin{document}
+\begin{tikztimingtable}[
+    timing/slope=0.1,
+    timing/dslope=0.2,
+    xscale=1.4,
+    yscale=1.1,
+    timing/rowdist=2.2ex
+]
+    \textbf{clk}            & 14{C} \\
+    \textbf{rst\_n}          & 1{L} 13{H} \\
+    \textbf{in\_valid}       & 1{L} 4{H} 9{L} \\
+    \textbf{in\_ready}       & 14{H} \\
+    \textbf{d\_tile} (Input) & 1{U} 1{D{Tile 0}} 1{D{Tile 1}} 1{D{Tile 2}} 1{D{Tile 3}} 9{U} \\
+    \textbf{u\_tile} (Weight)& 1{U} 1{D{U0}} 1{D{U1}} 1{D{U2}} 1{D{U3}} 9{U} \\
+    \textbf{first\_ch}       & 1{L} 1{H} 12{L} \\
+    \textbf{last\_ch}        & 4{L} 1{H} 9{L} \\
+    \textbf{v\_trans\_valid} & 2{L} 4{H} 8{L} \\
+    \textbf{mult\_valid}     & 3{L} 4{H} 7{L} \\
+    \textbf{accum\_valid}    & 5{L} 1{H} 8{L} \\
+    \textbf{out\_valid}      & 7{L} 1{H} 6{L} \\
+    \textbf{y\_tile} (Output)& 7{U} 1{D{Y Tile}} 6{U} \\
+\extracode
+    \vertlines[help lines, color=gray!40]{1,2,3,4,5,6,7,8,9,10,11,12,13,14}
+    \node[above, font=\footnotesize\bfseries] at (1.5, 2.5) {T1};
+    \node[above, font=\footnotesize\bfseries] at (2.5, 2.5) {T2};
+    \node[above, font=\footnotesize\bfseries] at (3.5, 2.5) {T3};
+    \node[above, font=\footnotesize\bfseries] at (4.5, 2.5) {T4};
+    \node[above, font=\footnotesize\bfseries] at (5.5, 2.5) {T5};
+    \node[above, font=\footnotesize\bfseries] at (6.5, 2.5) {T6};
+    \node[above, font=\footnotesize\bfseries] at (7.5, 2.5) {T7};
+    \draw[<->, >=Stealth, thick, blue!80!black] (1, -13.5) -- node[below, font=\small\bfseries] {Pipeline Latency = 5 Cycles} (6, -13.5);
+\end{tikztimingtable}
+\end{document}

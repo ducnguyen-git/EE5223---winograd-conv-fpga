@@ -1,0 +1,298 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/Users/Acer/.gemini/antigravity/scratch/EE5223---winograd-conv-fpga
+vchannel_accumulator
+Z1 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+Z2 !s110 1794453407
+!i10b 1
+!s100 1SA1JSQLM8zbDRAYV4zjb1
+I1Z:`m6hg26_2dV13c=K`c1
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+!s105 channel_accumulator_sv_unit
+S1
+R0
+w1793363895
+8rtl/channel_accumulator.sv
+Frtl/channel_accumulator.sv
+Z4 L0 11
+Z5 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z6 !s108 1794453407.000000
+Z7 !s107 tb/winograd_core_tb.sv|tb/output_transform_tb.sv|tb/input_transform_tb.sv|rtl/winograd_top.sv|rtl/winograd_controller.sv|rtl/output_transform_2d.sv|rtl/output_transform_1d.sv|rtl/multiplier_array.sv|rtl/input_transform_2d.sv|rtl/input_transform_1d.sv|rtl/input_buffer_2d.sv|rtl/channel_accumulator.sv|
+Z8 !s90 -sv|rtl/channel_accumulator.sv|rtl/input_buffer_2d.sv|rtl/input_transform_1d.sv|rtl/input_transform_2d.sv|rtl/multiplier_array.sv|rtl/output_transform_1d.sv|rtl/output_transform_2d.sv|rtl/winograd_controller.sv|rtl/winograd_top.sv|tb/input_transform_tb.sv|tb/output_transform_tb.sv|tb/winograd_core_tb.sv|
+!i113 1
+o-sv
+Z9 tCvgOpt 0
+vinput_buffer_2d
+R1
+R2
+!i10b 1
+!s100 a=cC46E>XZ3zi]Y`]Y:iU3
+I76CgL>ODi]_h6ko@kc5Q?2
+R3
+!s105 input_buffer_2d_sv_unit
+S1
+R0
+w1793363901
+8rtl/input_buffer_2d.sv
+Frtl/input_buffer_2d.sv
+L0 7
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vinput_transform_1d
+R1
+R2
+!i10b 1
+!s100 4cV13T>KLFYd0DD[@dRXa0
+IEg3_iaH4DFFgn_FCb]?da2
+R3
+!s105 input_transform_1d_sv_unit
+S1
+R0
+w1793363847
+8rtl/input_transform_1d.sv
+Frtl/input_transform_1d.sv
+L0 12
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vinput_transform_2d
+R1
+R2
+!i10b 1
+!s100 Ri<U_he_:d9jPl><`8KzU0
+Io;eI=YDP[U0iPohVB0DPe0
+R3
+!s105 input_transform_2d_sv_unit
+S1
+R0
+w1793363857
+8rtl/input_transform_2d.sv
+Frtl/input_transform_2d.sv
+R4
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vinput_transform_tb
+R1
+R2
+!i10b 1
+!s100 Ff<4?R^jM?6`UC98M]^W22
+IJDRKY2=X03AU]:Hb2>UfL1
+R3
+!s105 input_transform_tb_sv_unit
+S1
+R0
+w1793363946
+8tb/input_transform_tb.sv
+Ftb/input_transform_tb.sv
+L0 8
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vmultiplier_array
+R1
+R2
+!i10b 1
+!s100 ao6oFh1VmhCQhUTDFhmaE3
+ISWDQPbz[8oLIE_S2=VEZm1
+R3
+!s105 multiplier_array_sv_unit
+S1
+R0
+w1793363887
+8rtl/multiplier_array.sv
+Frtl/multiplier_array.sv
+L0 13
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+voutput_transform_1d
+R1
+R2
+!i10b 1
+!s100 YYi=R3SXnjnSYE74[a7:O3
+I_O]Zh5f1KUg5^Foo2M;Q;2
+R3
+!s105 output_transform_1d_sv_unit
+S1
+R0
+w1793363865
+8rtl/output_transform_1d.sv
+Frtl/output_transform_1d.sv
+R4
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+voutput_transform_2d
+R1
+R2
+!i10b 1
+!s100 jIC7z5Tdn7OWWLNdk=Ym02
+ILjLn6DBFaW@[bDgdYcdDU2
+R3
+!s105 output_transform_2d_sv_unit
+S1
+R0
+w1793363878
+8rtl/output_transform_2d.sv
+Frtl/output_transform_2d.sv
+L0 9
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+voutput_transform_tb
+R1
+R2
+!i10b 1
+!s100 `<JWJlJ[P6bF9Bm^nA<Da3
+IagM@?@bgoH3KFW`giJ=5U3
+R3
+!s105 output_transform_tb_sv_unit
+S1
+R0
+w1793363956
+8tb/output_transform_tb.sv
+Ftb/output_transform_tb.sv
+L0 8
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vwinograd_controller
+R1
+R2
+!i10b 1
+!s100 ]=NXbDLO65gVMUR=HS3fG2
+I]TE_Zf>caNFUJEUSOG3n@2
+R3
+!s105 winograd_controller_sv_unit
+S1
+R0
+w1793363909
+8rtl/winograd_controller.sv
+Frtl/winograd_controller.sv
+L0 7
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vwinograd_core_tb
+R1
+R2
+!i10b 1
+!s100 D[;jl3a@`lJ0z31ZnBKCN1
+IPc2RzDE4?@YZ7V8[G3WS20
+R3
+!s105 winograd_core_tb_sv_unit
+S1
+R0
+w1793363969
+8tb/winograd_core_tb.sv
+Ftb/winograd_core_tb.sv
+L0 9
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
+vwinograd_top
+R1
+R2
+!i10b 1
+!s100 f99T=SNj07LKczhP2KL<T1
+IlbOSEMEBJ_600`33g6UdX3
+R3
+!s105 winograd_top_sv_unit
+S1
+R0
+w1793363923
+8rtl/winograd_top.sv
+Frtl/winograd_top.sv
+L0 15
+R5
+r1
+!s85 0
+31
+R6
+R7
+R8
+!i113 1
+o-sv
+R9
