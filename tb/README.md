@@ -34,3 +34,17 @@ A deliberately corrupted expected pixel must produce a nonzero simulator exit.
 changing `CIN`. Mismatches, extra outputs, and watchdog timeouts use `$fatal`.
 
 The regression also verifies that `PARALLEL_DSPS=4` and `8` fail at startup.
+
+- `input_reuse_tb.sv`: Compares cached replay against normal transforms for multiple
+  filters, 1/4/64-channel groups, input gaps, replacement tiles, and reset during
+  replay. Changes `d_tile` during replay to detect accidental recomputation and
+  counts input transforms. Checks backpressure for empty/partial caches, mismatched
+  channel counts, and restarting an unfinished replay. Included in `run_regression.py`.
+
+- `line_buffer_tb.sv`: Checks every overlapping window in a two-channel image,
+  source gaps, output stalls, and stability while stalled.
+- `stream_top_tb.sv`: Compares complete streamed images against direct spatial
+  convolution with exact transformed integer kernels. Covers odd/even dimensions,
+  single/multiple channels and filters, input stalls, reset during a frame, blocked
+  weight writes, invalid addresses, missing weights, and weight reuse across two
+  frames. Both tests are included in `python3 tb/run_regression.py`.

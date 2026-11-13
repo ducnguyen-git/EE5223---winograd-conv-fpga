@@ -9,7 +9,7 @@ module parameter_widths_tb;
     winograd_top #(.DATA_IN_WIDTH(8), .U_WIDTH(8), .DATA_OUT_WIDTH(8),
                    .MAX_CHANNELS(64), .SHIFT_BITS(0)) dut (
         .clk(clk), .rst_n(rst_n), .in_valid(valid), .in_ready(ready),
-        .d_tile(d), .u_tile(u), .first_ch(first_ch), .last_ch(last_ch),
+        .d_tile(d), .u_tile(u), .first_ch(first_ch), .last_ch(last_ch), .reuse_input(1'b0),
         .out_valid(out_valid), .y_tile(y));
 
     logic signed [33:0] products [0:3][0:3];

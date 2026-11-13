@@ -13,6 +13,7 @@
 `timescale 1ns / 1ps
 
 module winograd_top #(
+    parameter MAX_CHANNELS  = 4,
     parameter DATA_IN_WIDTH = 16,
     parameter V_WIDTH       = DATA_IN_WIDTH + 2,
     parameter U_WIDTH       = 16,
@@ -20,7 +21,6 @@ module winograd_top #(
     parameter ACCUM_WIDTH   = PROD_WIDTH + $clog2(MAX_CHANNELS),
     parameter DATA_OUT_WIDTH= 16,
     parameter PARALLEL_DSPS = 16,
-    parameter MAX_CHANNELS  = 4,
     parameter SHIFT_BITS    = 6
 )(
     input  logic                            clk,
@@ -33,6 +33,7 @@ module winograd_top #(
     input  logic signed [U_WIDTH-1:0]       u_tile [0:3][0:3],
     input  logic                            first_ch,
     input  logic                            last_ch,
+    input  logic                            reuse_input, // Replay cached V; d_tile is ignored.
 
     // Output Handshakes & Data
     output logic                            out_valid,
@@ -45,7 +46,24 @@ module winograd_top #(
             $fatal(1, "Invalid Winograd input/product widths");
     end
 
-    assign in_ready = 1'b1; // Fully pipelined, able to accept new tile every cycle
+    localparam CACHE_INDEX_BITS = (MAX_CHANNELS > 1) ? $clog2(MAX_CHANNELS) : 1;
+    localparam CHANNEL_BITS = $clog2(MAX_CHANNELS + 1);
+    logic [CHANNEL_BITS-1:0] next_channel, channel_in, channel_d1, cached_channels;
+    logic cache_ready, group_active, group_reuse;
+    logic accepted, accepted_d1, reuse_d1;
+    // shortcut: asynchronous cache reads; add a read stage when synchronous RAM is needed.
+    logic signed [V_WIDTH-1:0] v_cache [0:MAX_CHANNELS-1][0:3][0:3];
+    logic signed [V_WIDTH-1:0] mult_v [0:3][0:3];
+
+    assign channel_in = first_ch ? '0 : next_channel;
+    // Replay must match the complete cached channel group, in order.
+    assign in_ready = reuse_input ?
+        (cache_ready && (!group_active || group_reuse) &&
+         (int'(channel_in) < int'(cached_channels)) &&
+         (first_ch == !group_active) &&
+         (last_ch == (channel_in == cached_channels - 1'b1))) :
+        (!group_active || !group_reuse);
+    assign accepted = in_valid && in_ready;
 
     // -------------------------------------------------------------------------
     // Stage 1 & 2: Input Transform Unit (V = B^T * d * B)
@@ -61,7 +79,7 @@ module winograd_top #(
     ) u_input_trans (
         .clk(clk),
         .rst_n(rst_n),
-        .valid_in(in_valid),
+        .valid_in(accepted && !reuse_input),
         .d_in(d_tile),
         .valid_out(v_trans_valid),
         .v_out(v_matrix)
@@ -88,6 +106,49 @@ module winograd_top #(
         end
     end
 
+    always_ff @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            next_channel <= '0;
+            channel_d1 <= '0;
+            cached_channels <= '0;
+            cache_ready <= 1'b0;
+            group_active <= 1'b0;
+            group_reuse <= 1'b0;
+            accepted_d1 <= 1'b0;
+            reuse_d1 <= 1'b0;
+        end else begin
+            accepted_d1 <= accepted;
+            if (accepted) begin
+                channel_d1 <= channel_in;
+                reuse_d1 <= reuse_input;
+                next_channel <= last_ch ? '0 : channel_in + 1'b1;
+                group_active <= !last_ch;
+                group_reuse <= reuse_input;
+            end
+            if (v_trans_valid) begin
+                v_cache[CACHE_INDEX_BITS'(channel_d1)] <= v_matrix;
+                if (last_ch_d1) begin
+                    cached_channels <= channel_d1 + 1'b1;
+                    cache_ready <= 1'b1;
+                end
+            end
+            // A replacement tile invalidates the old cache until every channel is stored.
+            if (accepted && !reuse_input && first_ch)
+                cache_ready <= 1'b0;
+        end
+    end
+
+    assign mult_v = reuse_d1 ? v_cache[CACHE_INDEX_BITS'(channel_d1)] : v_matrix;
+
+    // synthesis translate_off
+    always @(posedge clk) begin
+        if (rst_n && accepted && !reuse_input) begin
+            if (int'(channel_in) >= MAX_CHANNELS || first_ch != !group_active)
+                $fatal(1, "Invalid input channel sequence or MAX_CHANNELS exceeded");
+        end
+    end
+    // synthesis translate_on
+
     // -------------------------------------------------------------------------
     // Stage 3: Multiplier Array (M = U .* V)
     // Latency: 1 cycle
@@ -103,8 +164,8 @@ module winograd_top #(
     ) u_mult_array (
         .clk(clk),
         .rst_n(rst_n),
-        .valid_in(v_trans_valid),
-        .v_in(v_matrix),
+        .valid_in(accepted_d1),
+        .v_in(mult_v),
         .u_in(u_tile_d1),
         .valid_out(mult_valid),
         .m_out(m_matrix)

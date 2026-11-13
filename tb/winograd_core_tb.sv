@@ -44,7 +44,7 @@ module winograd_core_tb;
         .d_tile(d_tile),
         .u_tile(u_tile),
         .first_ch(first_ch),
-        .last_ch(last_ch),
+        .last_ch(last_ch), .reuse_input(1'b0),
         .out_valid(out_valid),
         .y_tile(y_tile)
     );

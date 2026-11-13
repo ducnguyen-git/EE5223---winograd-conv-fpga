@@ -18,7 +18,11 @@ def main():
         temp = Path(directory)
         env = {**os.environ, "CCACHE_DIR": str(temp / "ccache")}
         sources = sorted(str(p) for p in (ROOT / "rtl").glob("*.sv"))
-        cases = [("output_transform_tb", {}), ("parameter_widths_tb", {})]
+        cases = [("output_transform_tb", {}), ("parameter_widths_tb", {}), ("input_reuse_tb", {}),
+                 ("input_reuse_tb", {"CACHE_CHANNELS": 5})]
+        cases += [("line_buffer_tb", {}), ("stream_top_tb", {}),
+                  ("stream_top_tb", {"IMAGE_WIDTH": 4, "IMAGE_HEIGHT": 4, "CHANNELS": 1, "FILTERS": 1}),
+                  ("stream_top_tb", {"IMAGE_WIDTH": 8, "IMAGE_HEIGHT": 6, "CHANNELS": 2, "FILTERS": 2})]
         cases += [("winograd_core_tb", {"CIN": cin, "INSERT_GAPS": gaps})
                   for cin, gaps in [(1, 0), (4, 0), (4, 1), (64, 1)]]
         cases += [("winograd_core_tb", {"CIN": 1, "INSERT_GAPS": 0, "PARALLEL_DSPS": dsps})
