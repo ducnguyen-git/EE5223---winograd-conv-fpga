@@ -9,6 +9,9 @@
 module winograd_core_tb;
 
     parameter NUM_TILES = 50;
+    parameter CIN = 1;
+    parameter INSERT_GAPS = 0;
+    string vector_dir = "tb";
 
     logic        clk;
     logic        rst_n;
@@ -29,7 +32,7 @@ module winograd_core_tb;
         .V_WIDTH(18),
         .U_WIDTH(16),
         .PROD_WIDTH(34),
-        .ACCUM_WIDTH(36),
+        .MAX_CHANNELS(CIN),
         .DATA_OUT_WIDTH(16),
         .PARALLEL_DSPS(16)
     ) dut (
@@ -52,8 +55,8 @@ module winograd_core_tb;
     end
 
     // Test vector buffers
-    logic [15:0] input_mem    [0:(NUM_TILES*16)-1];
-    logic [15:0] weight_mem   [0:(NUM_TILES*16)-1];
+    logic [15:0] input_mem    [0:(NUM_TILES*CIN*16)-1];
+    logic [15:0] weight_mem   [0:(NUM_TILES*CIN*16)-1];
     logic [15:0] expected_mem [0:(NUM_TILES*4)-1];
 
     int mismatch_count = 0;
@@ -63,7 +66,7 @@ module winograd_core_tb;
     initial begin
         int exp_idx = 0;
         while (verified_tiles < NUM_TILES) begin
-            @(posedge clk);
+            @(negedge clk);
             if (out_valid) begin
                 for (int r = 0; r < 2; r++) begin
                     for (int c = 0; c < 2; c++) begin
@@ -84,7 +87,10 @@ module winograd_core_tb;
             end
         end
 
-        #50;
+        repeat (8) begin
+            @(negedge clk);
+            if (out_valid) $fatal(1, "Unexpected extra output tile");
+        end
         $display("\n=======================================================");
         $display("          REGRESSION SIMULATION SUMMARY                ");
         $display("=======================================================");
@@ -94,7 +100,7 @@ module winograd_core_tb;
         if (mismatch_count == 0) begin
             $display(" STATUS               : [PASSED] ZERO BIT MISMATCHES!  ");
         end else begin
-            $display(" STATUS               : [FAILED] MISMATCHES DETECTED! ");
+            $fatal(1, "Mismatches detected: %0d", mismatch_count);
         end
         $display("=======================================================\n");
 
@@ -103,10 +109,12 @@ module winograd_core_tb;
 
     // Stimulus feeding process
     initial begin
-        $display("[TB] Loading hex test vectors...");
-        $readmemh("tb/input.hex", input_mem);
-        $readmemh("tb/weight.hex", weight_mem);
-        $readmemh("tb/expected_output.hex", expected_mem);
+        if (CIN < 1) $fatal(1, "CIN must be positive");
+        void'($value$plusargs("VECTOR_DIR=%s", vector_dir));
+        $display("[TB] Loading hex test vectors from %s (Cin=%0d, gaps=%0d)", vector_dir, CIN, INSERT_GAPS);
+        $readmemh({vector_dir, "/input.hex"}, input_mem);
+        $readmemh({vector_dir, "/weight.hex"}, weight_mem);
+        $readmemh({vector_dir, "/expected_output.hex"}, expected_mem);
         $display("[TB] Test vectors loaded successfully.");
 
         rst_n = 0;
@@ -114,36 +122,42 @@ module winograd_core_tb;
         first_ch = 0;
         last_ch  = 0;
 
-        #30;
+        repeat (3) @(negedge clk);
         rst_n = 1;
-        #20;
 
-        // Feed tiles into DUT
+        // Consecutive tiles exercise accumulator restart without draining the pipeline.
         for (int t = 0; t < NUM_TILES; t++) begin
-            @(posedge clk);
-            in_valid <= 1'b1;
-            first_ch <= 1'b1;
-            last_ch  <= 1'b1;
-
-            for (int r = 0; r < 4; r++) begin
-                for (int c = 0; c < 4; c++) begin
-                    d_tile[r][c] <= input_mem[t*16 + r*4 + c];
-                    u_tile[r][c] <= weight_mem[t*16 + r*4 + c];
+            for (int ch = 0; ch < CIN; ch++) begin
+                @(negedge clk);
+                if (INSERT_GAPS && ((t + ch) % 3 == 1)) begin
+                    in_valid = 0;
+                    // Invalid markers must not change the accumulation state.
+                    first_ch = 1;
+                    last_ch = 1;
+                    repeat (2) @(negedge clk);
+                end
+                if (!in_ready) $fatal(1, "Unexpected input stall");
+                in_valid = 1;
+                first_ch = (ch == 0);
+                last_ch = (ch == CIN - 1);
+                for (int r = 0; r < 4; r++) begin
+                    for (int c = 0; c < 4; c++) begin
+                        d_tile[r][c] = input_mem[(t*CIN+ch)*16 + r*4 + c];
+                        u_tile[r][c] = weight_mem[(t*CIN+ch)*16 + r*4 + c];
+                    end
                 end
             end
         end
-
-        @(posedge clk);
-        in_valid <= 1'b0;
-        first_ch <= 1'b0;
-        last_ch  <= 1'b0;
+        @(negedge clk);
+        in_valid = 0;
+        first_ch = 0;
+        last_ch = 0;
     end
 
     // Watchdog timer (prevent infinite hanging)
     initial begin
-        #50000;
-        $display("[WATCHDOG TIMEOUT] Simulation exceeded cycle limit!");
-        $finish;
+        #(1000 + NUM_TILES*CIN*40);
+        $fatal(1, "Watchdog timeout: verified %0d / %0d tiles", verified_tiles, NUM_TILES);
     end
 
 endmodule

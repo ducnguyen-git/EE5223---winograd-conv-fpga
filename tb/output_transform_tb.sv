@@ -1,83 +1,70 @@
-// =============================================================================
-// Testbench: output_transform_tb
-// Description: Unit testbench for output_transform_2d
-// Self-checking with automated mismatch counter
-// =============================================================================
 `timescale 1ns / 1ps
-
 module output_transform_tb;
-
-    logic        clk;
-    logic        rst_n;
-    logic        valid_in;
+    logic clk = 0;
+    always #5 clk = ~clk;
+    logic rst_n = 0, valid_in = 0;
     logic signed [35:0] m_in [0:3][0:3];
-    logic        valid_out;
-    logic signed [15:0] y_out [0:1][0:1];
+    logic valid_raw, valid_scaled;
+    logic signed [15:0] raw_out [0:1][0:1], scaled_out [0:1][0:1];
 
-    output_transform_2d #(
-        .IN_WIDTH(36),
-        .INTER_WIDTH(38),
-        .FINAL_WIDTH(40),
-        .OUT_WIDTH(16),
-        .SHIFT_BITS(0) // No shift for raw check
-    ) dut (
-        .clk(clk),
-        .rst_n(rst_n),
-        .valid_in(valid_in),
-        .m_in(m_in),
-        .valid_out(valid_out),
-        .y_out(y_out)
-    );
+    output_transform_2d #(.SHIFT_BITS(0)) raw_dut (
+        .clk(clk), .rst_n(rst_n), .valid_in(valid_in), .m_in(m_in),
+        .valid_out(valid_raw), .y_out(raw_out));
+    output_transform_2d #(.SHIFT_BITS(6)) scaled_dut (
+        .clk(clk), .rst_n(rst_n), .valid_in(valid_in), .m_in(m_in),
+        .valid_out(valid_scaled), .y_out(scaled_out));
 
-    initial begin
-        clk = 0;
-        forever #5 clk = ~clk;
-    end
-
-    int errors = 0;
-
-    initial begin
-        rst_n = 0;
+    task automatic check_value(input longint signed value, input integer expected_scaled);
+        longint signed expected_raw;
+        expected_raw = (value > 32767) ? 32767 : ((value < -32768) ? -32768 : value);
+        @(negedge clk);
+        m_in[0][0] = 36'(value);
+        valid_in = 1;
+        @(negedge clk);
         valid_in = 0;
-        for (int r = 0; r < 4; r++)
-            for (int c = 0; c < 4; c++)
-                m_in[r][c] = 0;
+        while (!valid_raw || !valid_scaled) @(negedge clk);
+        if (raw_out[0][0] !== 16'(expected_raw) || scaled_out[0][0] !== 16'(expected_scaled))
+            $fatal(1, "Input %0d: raw=%0d expected=%0d, scaled=%0d expected=%0d",
+                   value, raw_out[0][0], expected_raw, scaled_out[0][0], expected_scaled);
+        for (int r=0; r<2; r++)
+            for (int c=0; c<2; c++)
+                if ((r != 0 || c != 0) && (raw_out[r][c] !== 0 || scaled_out[r][c] !== 0))
+                    $fatal(1, "Unexpected nonzero output at [%0d,%0d]", r, c);
+        @(negedge clk);
+        if (valid_raw || valid_scaled) $fatal(1, "Unexpected extra output");
+    endtask
 
-        #20;
+    initial begin
+        for (int r=0; r<4; r++)
+            for (int c=0; c<4; c++) m_in[r][c] = 0;
+        repeat (2) @(negedge clk);
         rst_n = 1;
-        #10;
-
-        // Apply M where only M[0][0] = 10
-        // A^T = [[1,1,1,0],[0,1,-1,-1]]
-        // Column 0: A^T * [10,0,0,0]^T = [10, 0]^T
-        // Other columns: 0
-        // Row 0: A^T * [10,0,0,0]^T = [10, 0]^T
-        // Expected Y: Y[0][0] = 10, all others 0
-        @(posedge clk);
-        valid_in <= 1'b1;
-        m_in[0][0] <= 36'sd10;
-
-        @(posedge clk);
-        valid_in <= 1'b0;
-
-        while (!valid_out) @(posedge clk);
-
-        if (y_out[0][0] !== 16'sd10) begin
-            $display("[FAIL] Expected y_out[0][0] = 10, got %0d", y_out[0][0]);
-            errors++;
-        end else begin
-            $display("[PASS] Output transform delta test: y_out[0][0] = 10 verified.");
-        end
-
-        #20;
-        if (errors == 0) begin
-            $display("==================================================");
-            $display("SUCCESS: output_transform_tb passed all tests!");
-            $display("==================================================");
-        end else begin
-            $display("FAILURE: %0d errors in output_transform_tb!", errors);
-        end
+        check_value(0, 0);
+        check_value(10, 0);
+        check_value(31, 0);
+        check_value(32, 1);
+        check_value(33, 1);
+        check_value(-31, 0);
+        check_value(-32, 0); // Halfway cases round toward positive infinity.
+        check_value(-33, -1);
+        check_value(-95, -1);
+        check_value(-96, -1);
+        check_value(-97, -2);
+        check_value(32767, 512);
+        check_value(32768, 512);
+        check_value(-32768, -512);
+        check_value(-32769, -512);
+        check_value(32767*64+31, 32767);
+        check_value(32767*64+32, 32767);
+        check_value(-32768*64-32, -32768);
+        check_value(-32768*64-33, -32768);
+        check_value(64'sd34359738367, 32767);
+        check_value(-64'sd34359738368, -32768);
+        $display("PASS: 21 rounding, saturation, and zero-shift cases");
         $finish;
     end
-
+    initial begin
+        #10000;
+        $fatal(1, "Output transform watchdog timeout");
+    end
 endmodule
