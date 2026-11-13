@@ -21,6 +21,8 @@ def main():
         cases = [("output_transform_tb", {}), ("parameter_widths_tb", {})]
         cases += [("winograd_core_tb", {"CIN": cin, "INSERT_GAPS": gaps})
                   for cin, gaps in [(1, 0), (4, 0), (4, 1), (64, 1)]]
+        cases += [("winograd_core_tb", {"CIN": 1, "INSERT_GAPS": 0, "PARALLEL_DSPS": dsps})
+                  for dsps in (4, 8)]
         for index, (top, parameters) in enumerate(cases):
             build = temp / f"build-{index}"
             command = ["verilator", "--binary", "--assert", "--timing", "-Wno-fatal",
@@ -36,6 +38,11 @@ def main():
                 generate_verification_suite(num_tiles=50, cin=parameters["CIN"], tb_dir=str(vectors))
                 run.append(f"+VECTOR_DIR={vectors}")
             result = subprocess.run(run, cwd=ROOT, capture_output=True, text=True, timeout=30)
+            if parameters.get("PARALLEL_DSPS", 16) != 16:
+                if result.returncode == 0 or "supports only PARALLEL_DSPS=16" not in result.stdout + result.stderr:
+                    sys.exit("FAIL: unsupported multiplier count was not rejected")
+                print(f"PASS: rejected PARALLEL_DSPS={parameters['PARALLEL_DSPS']}")
+                continue
             if result.returncode:
                 sys.exit(result.stdout + result.stderr)
             print(f"PASS: {top} {parameters}")

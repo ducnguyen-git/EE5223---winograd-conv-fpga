@@ -23,3 +23,5 @@ The caller must not exceed this bound or interleave tiles in the single accumula
 scaled by 64 in the vector generator. Zero disables rounding and shifting.
 Positive shifts round by adding half a quantization step (ties toward positive
 infinity). Saturation uses the configured signed `DATA_OUT_WIDTH` range.
+
+`PARALLEL_DSPS` supports only 16; other values fail at simulation startup.

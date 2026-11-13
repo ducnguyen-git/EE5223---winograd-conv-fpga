@@ -32,3 +32,5 @@ A deliberately corrupted expected pixel must produce a nonzero simulator exit.
 `winograd_core_tb` accepts `CIN` and `INSERT_GAPS` parameters and a
 `+VECTOR_DIR=<directory>` argument (default `tb`). Generate matching vectors when
 changing `CIN`. Mismatches, extra outputs, and watchdog timeouts use `$fatal`.
+
+The regression also verifies that `PARALLEL_DSPS=4` and `8` fail at startup.

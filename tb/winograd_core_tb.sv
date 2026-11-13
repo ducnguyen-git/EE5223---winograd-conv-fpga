@@ -11,6 +11,7 @@ module winograd_core_tb;
     parameter NUM_TILES = 50;
     parameter CIN = 1;
     parameter INSERT_GAPS = 0;
+    parameter PARALLEL_DSPS = 16;
     string vector_dir = "tb";
 
     logic        clk;
@@ -34,7 +35,7 @@ module winograd_core_tb;
         .PROD_WIDTH(34),
         .MAX_CHANNELS(CIN),
         .DATA_OUT_WIDTH(16),
-        .PARALLEL_DSPS(16)
+        .PARALLEL_DSPS(PARALLEL_DSPS)
     ) dut (
         .clk(clk),
         .rst_n(rst_n),
