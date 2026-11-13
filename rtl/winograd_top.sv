@@ -14,12 +14,14 @@
 
 module winograd_top #(
     parameter DATA_IN_WIDTH = 16,
-    parameter V_WIDTH       = 18,
+    parameter V_WIDTH       = DATA_IN_WIDTH + 2,
     parameter U_WIDTH       = 16,
-    parameter PROD_WIDTH    = 34,
-    parameter ACCUM_WIDTH   = 36,
+    parameter PROD_WIDTH    = V_WIDTH + U_WIDTH,
+    parameter ACCUM_WIDTH   = PROD_WIDTH + $clog2(MAX_CHANNELS),
     parameter DATA_OUT_WIDTH= 16,
-    parameter PARALLEL_DSPS = 16
+    parameter PARALLEL_DSPS = 16,
+    parameter MAX_CHANNELS  = 4,
+    parameter SHIFT_BITS    = 6
 )(
     input  logic                            clk,
     input  logic                            rst_n,
@@ -37,6 +39,12 @@ module winograd_top #(
     output logic signed [DATA_OUT_WIDTH-1:0] y_tile [0:1][0:1]
 );
 
+    initial begin
+        if (DATA_IN_WIDTH < 1 || U_WIDTH < 1 || V_WIDTH < DATA_IN_WIDTH + 2 ||
+            PROD_WIDTH < V_WIDTH + U_WIDTH)
+            $fatal(1, "Invalid Winograd input/product widths");
+    end
+
     assign in_ready = 1'b1; // Fully pipelined, able to accept new tile every cycle
 
     // -------------------------------------------------------------------------
@@ -48,7 +56,7 @@ module winograd_top #(
 
     input_transform_2d #(
         .DATA_IN_WIDTH(DATA_IN_WIDTH),
-        .INTER_WIDTH(17),
+        .INTER_WIDTH(DATA_IN_WIDTH + 1),
         .DATA_OUT_WIDTH(V_WIDTH)
     ) u_input_trans (
         .clk(clk),
@@ -125,7 +133,8 @@ module winograd_top #(
 
     channel_accumulator #(
         .IN_WIDTH(PROD_WIDTH),
-        .OUT_WIDTH(ACCUM_WIDTH)
+        .OUT_WIDTH(ACCUM_WIDTH),
+        .MAX_CHANNELS(MAX_CHANNELS)
     ) u_channel_accum (
         .clk(clk),
         .rst_n(rst_n),
@@ -143,10 +152,10 @@ module winograd_top #(
     // -------------------------------------------------------------------------
     output_transform_2d #(
         .IN_WIDTH(ACCUM_WIDTH),
-        .INTER_WIDTH(38),
-        .FINAL_WIDTH(40),
+        .INTER_WIDTH(ACCUM_WIDTH + 2),
+        .FINAL_WIDTH(ACCUM_WIDTH + 4),
         .OUT_WIDTH(DATA_OUT_WIDTH),
-        .SHIFT_BITS(6)
+        .SHIFT_BITS(SHIFT_BITS)
     ) u_output_trans (
         .clk(clk),
         .rst_n(rst_n),

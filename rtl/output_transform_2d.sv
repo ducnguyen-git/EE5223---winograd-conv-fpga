@@ -8,8 +8,8 @@
 
 module output_transform_2d #(
     parameter IN_WIDTH    = 36,
-    parameter INTER_WIDTH = 38,
-    parameter FINAL_WIDTH = 40,
+    parameter INTER_WIDTH = IN_WIDTH + 2,
+    parameter FINAL_WIDTH = INTER_WIDTH + 2,
     parameter OUT_WIDTH   = 16,
     parameter SHIFT_BITS  = 6
 )(
@@ -21,6 +21,19 @@ module output_transform_2d #(
     output logic                          valid_out,
     output logic signed [OUT_WIDTH-1:0]   y_out [0:1][0:1]  // [row][col]
 );
+
+    initial begin
+        if (IN_WIDTH < 1 || INTER_WIDTH < IN_WIDTH + 2 ||
+            FINAL_WIDTH < INTER_WIDTH + 2 || OUT_WIDTH < 1 ||
+            OUT_WIDTH > FINAL_WIDTH || SHIFT_BITS < 0 || SHIFT_BITS > FINAL_WIDTH)
+            $fatal(1, "Invalid output transform widths or shift");
+    end
+
+    localparam logic signed [OUT_WIDTH-1:0] OUT_MAX = {1'b0, {(OUT_WIDTH-1){1'b1}}};
+    localparam logic signed [OUT_WIDTH-1:0] OUT_MIN = {1'b1, {(OUT_WIDTH-1){1'b0}}};
+    // One guard bit keeps the rounding addition from overflowing.
+    localparam logic signed [FINAL_WIDTH:0] ROUND_BIAS =
+        (SHIFT_BITS > 0) ? ({{FINAL_WIDTH{1'b0}}, 1'b1} << (SHIFT_BITS - 1)) : '0;
 
     // Step 1: Column transform on 4 columns -> 2x4 intermediate matrix
     logic signed [INTER_WIDTH-1:0] col_res [0:1][0:3];
@@ -95,19 +108,19 @@ module output_transform_2d #(
     endgenerate
 
     // Stage 3: Requantization (shift with rounding) and Saturation
-    logic signed [FINAL_WIDTH-1:0] shifted [0:1][0:1];
+    logic signed [FINAL_WIDTH:0] shifted [0:1][0:1];
     logic signed [OUT_WIDTH-1:0]   clamped [0:1][0:1];
 
     always_comb begin
         for (int i = 0; i < 2; i = i + 1) begin
             for (int j = 0; j < 2; j = j + 1) begin
-                shifted[i][j] = (row_res[i][j] + (1 << (SHIFT_BITS - 1))) >>> SHIFT_BITS;
+                shifted[i][j] = ($signed({row_res[i][j][FINAL_WIDTH-1], row_res[i][j]}) + ROUND_BIAS) >>> SHIFT_BITS;
                 
-                // Clamp to signed 16-bit range [-32768, 32767]
-                if (shifted[i][j] > 32767) begin
-                    clamped[i][j] = 16'sh7FFF;
-                end else if (shifted[i][j] < -32768) begin
-                    clamped[i][j] = 16'sh8000;
+                // Clamp to the configured signed output range.
+                if (shifted[i][j] > $signed({{(FINAL_WIDTH+1-OUT_WIDTH){OUT_MAX[OUT_WIDTH-1]}}, OUT_MAX})) begin
+                    clamped[i][j] = OUT_MAX;
+                end else if (shifted[i][j] < $signed({{(FINAL_WIDTH+1-OUT_WIDTH){OUT_MIN[OUT_WIDTH-1]}}, OUT_MIN})) begin
+                    clamped[i][j] = OUT_MIN;
                 end else begin
                     clamped[i][j] = shifted[i][j][OUT_WIDTH-1:0];
                 end

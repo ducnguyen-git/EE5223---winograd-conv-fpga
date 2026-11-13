@@ -9,8 +9,9 @@
 `timescale 1ns / 1ps
 
 module channel_accumulator #(
+    parameter MAX_CHANNELS = 4,
     parameter IN_WIDTH  = 34,
-    parameter OUT_WIDTH = 36
+    parameter OUT_WIDTH = IN_WIDTH + $clog2(MAX_CHANNELS)
 )(
     input  logic                          clk,
     input  logic                          rst_n,
@@ -22,6 +23,12 @@ module channel_accumulator #(
     output logic                          valid_out,
     output logic signed [OUT_WIDTH-1:0]   m_accum_out [0:3][0:3]
 );
+
+    initial begin
+        if (IN_WIDTH < 1 || MAX_CHANNELS < 1 ||
+            OUT_WIDTH < IN_WIDTH + $clog2(MAX_CHANNELS))
+            $fatal(1, "Accumulator width must cover MAX_CHANNELS full-range products");
+    end
 
     logic signed [OUT_WIDTH-1:0] accum_reg [0:3][0:3];
 
